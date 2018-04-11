@@ -10,11 +10,11 @@ GitHub is an all-in-one platform for collaborative development.
 github organization.
 
 The following sections are covered in this guide
-- [What you'll build](#what-you-build)
-- [Prerequisites](#pre-req)
-- [Developing the service](#developing-service)
+- [What you'll build](#what-youll-build)
+- [Prerequisites](#prerequisites)
+- [Developing the program](#developing-the-program)
 - [Testing](#testing)
-- [Deployment](#deploying-the-scenario)
+- [Deployment](#-deployment)
  
 ## What you'll build
 
@@ -157,7 +157,7 @@ Next, we need to get a specific github organization, in order to get all of its 
     }
 ```
 
-Please refer to the [repository_line_coverage.bal](https://github.com/ballerina-guides) for the complete implementation.
+Please refer to the [repository_line_coverage.bal](https://github.com/ballerina-guides/sonarqube-github-integration/blob/master/RepositoryLineCoverageApp/repository_line_coverage.bal) for the complete implementation.
 
 ## Testing
 
@@ -192,13 +192,13 @@ To run the unit test, go to the sample root directory and run the following comm
    <SAMPLE_ROOT_DIRECTORY>$ ballerina test RepositoryLineCoverageApp/
    ```
    
-Refer to the [line_coverage_test.bal](http://github.com) for the implementation of the test file.
+Refer to the [line_coverage_test.bal](https://github.com/ballerina-guides/sonarqube-github-integration/blob/master/RepositoryLineCoverageApp/test/line_coverage_test.bal) for the implementation of the test file.
 
-## <a name="deploying-the-scenario"></a> Deployment
+## Deployment
 
 Once you are done with the development, you can deploy the service using any of the methods listed below. 
 
-### <a name="deploying-on-locally"></a> Deploying locally
+### Deploying locally
 You can deploy the services that you developed above in your local environment. You can create the 
 Ballerina executable archives (.balx) first and run them in your local environment as follows.
 
