@@ -14,7 +14,7 @@ The following sections are covered in this guide
 - [Prerequisites](#prerequisites)
 - [Developing the program](#developing-the-program)
 - [Testing](#testing)
-- [Deployment](#-deployment)
+- [Deployment](#deployment)
  
 ## What you'll build
 
