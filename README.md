@@ -172,8 +172,7 @@ After the above steps are completed, use the following command to execute the ap
 ### Sample output
 ```bash
 ...
-Fetching project: carbon-metrics
-Line coverage : 85.1%
+{"name":"carbon-metrics", "coverage":"85.1%"}
 ...
 
 ```
