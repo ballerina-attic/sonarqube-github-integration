@@ -25,6 +25,8 @@ repositories relevant to various projects, and sonaqube contains the details reg
 test line coverage, code duplications and bugs. The test line coverage of a repository is a significant metric that 
 project leads require in order to get an overall understanding of the test coverage in the project.
 
+![GitHub-Sonarqube_Integration](GitHub-SonQube.svg)
+
 In this example, we use the ballerina github connector to get a list of repositories under a specified organiztion in 
 github, and then pass that list to the ballerina sonarqube connector to get the test line coverage of each repository.
  
@@ -92,8 +94,12 @@ The implementation of the line coverage function will be as follows;
 
 ```ballerina
 endpoint github4:Client githubEP {
-      accessToken:config:getAsString("GITHUB_TOKEN") ?: "",
-        clientEndpointConfiguration: {}
+        clientEndpointConfiguration: {
+            auth:{
+                scheme:"oauth",
+                accessToken:config:getAsString("GITHUB_TOKEN") ?: ""
+            }
+        }
     };
 ```
 Here the github access token is read from the configuration file and the GitHub client is initialized.
@@ -102,8 +108,11 @@ Here the github access token is read from the configuration file and the GitHub 
 
 ```ballerina
     endpoint sonarqube6:SonarQubeClient sonarqubeEP {
-        token:config:getAsString("SONARQUBE_TOKEN") ?: "",
-        uri:"https://wso2.org/sonar"
+        uri:"https://wso2.org/sonar",
+        auth:{
+            scheme:"oauth",
+            accessToken:config:getAsString("SONARQUBE_TOKEN") ?: ""
+        }
     };
 ```
 Similarly, the Sonarqube token is read from the configuration file and the Sonarqube client is initialized.
