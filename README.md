@@ -1,4 +1,4 @@
-# Repository line coverage with sonarqube and github connectors
+# Line coverage with Ballerina connectors
 
 SonarQube is an open source platform developed by SonarSource for continuous inspection of code quality to perform 
 automatic reviews with static analysis of code to detect bugs, code smells and security vulnerabilities.
@@ -18,12 +18,18 @@ The following sections are covered in this guide
  
 ## What you'll build
 
-Let's consider a sample scenario to understand how you can use ballerina connectors. The following scenario specifies 
-how sonarqube and ballerina github connectors can be used to get a summary of the test line converage of all 
-repositories in a specific organization. In GitHub, there are numerous organizations, which have a collection of 
-repositories relevant to various projects, and sonaqube contains the details regarding those projects; such as 
-test line coverage, code duplications and bugs. The test line coverage of a repository is a significant metric that 
-project leads require in order to get an overall understanding of the test coverage in the project.
+Let's consider a sample scenario where a user requires to get the test line coverage of all the repositories in
+the organization `wso2`. This guide specifies how sonarqube and ballerina github connectors can be used 
+to get a summary of the test line coverage of all repositories in the `wso2` organization.
+ 
+In GitHub, there are numerous organizations, which have a collection of repositories relevant to various projects, 
+and Sonaqube contains the details regarding those projects; such as test line coverage, code duplications and bugs. 
+
+Therefore we need obtain the list of repositories in `wso2` from GitHub and then send the repository list to Sonarqube 
+to obtain the line coverage of each of the repositories.
+
+The test line coverage of a repository is a significant metric that project leads require in order to get an 
+overall understanding of the test coverage in the project.
 
 ![GitHub-Sonarqube_Integration](GitHub-SonQube.svg)
 
