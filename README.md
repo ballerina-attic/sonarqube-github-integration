@@ -1,4 +1,4 @@
-# Line coverage with Ballerina connectors
+# Sonarqube and GitHub Integration
 
 SonarQube is an open source platform developed by SonarSource for continuous inspection of code quality to perform 
 automatic reviews with static analysis of code to detect bugs, code smells and security vulnerabilities.
@@ -19,7 +19,7 @@ The following sections are covered in this guide
 ## What you'll build
 
 Let's consider a sample scenario where a user requires to get the test line coverage of all the repositories in
-the organization `wso2`. This guide specifies how sonarqube and ballerina github connectors can be used 
+the organization `wso2`. This guide specifies how Ballerina sonarqube and github endpoints can be used 
 to get a summary of the test line coverage of all repositories in the `wso2` organization.
  
 In GitHub, there are numerous organizations, which have a collection of repositories relevant to various projects, 
@@ -60,9 +60,9 @@ for this project to follow this guide.
 ```
 line-coverage-with-sonarqube-github
 ├── RepositoryLineCoverageApp
-│   ├── RepositoryLineCoverage.bal
+│   ├── repository_line_coverage.bal
 │   └── test
-│       └── test.bal
+│       └── line_coverage_test.bal
 ├── README.md
 ├── Ballerina.toml
 └── ballerina.conf
@@ -114,10 +114,13 @@ Here the github access token is read from the configuration file and the GitHub 
 
 ```ballerina
     endpoint sonarqube6:SonarQubeClient sonarqubeEP {
-        uri:"https://wso2.org/sonar",
-        auth:{
-            scheme:"oauth",
-            accessToken:config:getAsString("SONARQUBE_TOKEN") ?: ""
+        clientConfig: {
+            targets:[{url:config:getAsString("SONARQUBE_ENDPOINT") ?: ""}],
+            auth:{
+                scheme:"basic",
+                username:config:getAsString("SONARQUBE_TOKEN") ?: "",
+                password:""
+            }
         }
     };
 ```
