@@ -3,22 +3,32 @@ import wso2/github4;
 import ballerina/io;
 import wso2/sonarqube6;
 
-public function main(string[] args) {
+function main(string... args) {
 
-    json summary = getLineCoverageSummary(5) but {error => null};
+    json summary = check getLineCoverageSummary(5);
     io:println(summary);
 }
 
 function getLineCoverageSummary (int recordCount) returns json|error{
 
     endpoint github4:Client githubEP {
-        accessToken:config:getAsString("GITHUB_TOKEN") ?: "",
-        clientEndpointConfiguration: {}
+        clientEndpointConfiguration: {
+            auth:{
+                scheme:"oauth",
+                accessToken:config:getAsString("GITHUB_TOKEN")
+            }
+        }
     };
 
     endpoint sonarqube6:SonarQubeClient sonarqubeEP {
-        token:config:getAsString("SONARQUBE_TOKEN") ?: "",
-        uri:"https://wso2.org/sonar"
+        clientConfig: {
+            targets:[{url:config:getAsString("SONARQUBE_ENDPOINT")}],
+            auth:{
+                scheme:"basic",
+                username:config:getAsString("SONARQUBE_TOKEN"),
+                password:""
+            }
+        }
     };
 
     github4:Organization organization;
@@ -27,8 +37,8 @@ function getLineCoverageSummary (int recordCount) returns json|error{
         github4:Organization org => {
             organization = org;
         }
-        github4:GitConnectorError err => {
-            io:println(err);
+        github4:GitClientError err => {
+            return err;
         }
     }
 
@@ -38,8 +48,8 @@ function getLineCoverageSummary (int recordCount) returns json|error{
         github4:RepositoryList repoList => {
             repositoryList = repoList;
         }
-        github4:GitConnectorError err => {
-            io:println(err);
+        github4:GitClientError err => {
+            return err;
         }
     }
     json summaryJson = [];
@@ -47,7 +57,7 @@ function getLineCoverageSummary (int recordCount) returns json|error{
         var sonarqubeProjectResult = sonarqubeEP -> getProject(repo.name);
         match sonarqubeProjectResult {
             sonarqube6:Project project => {
-                string lineCoverage = sonarqubeEP -> getLineCoverage(project.key) but {error err => "0.0%"};
+                string lineCoverage = sonarqubeEP -> getLineCoverage(untaint project.key) but {error err => "0.0%"};
                 summaryJson[i] = {"name": repo.name, "coverage":lineCoverage};
             }
             error err => {

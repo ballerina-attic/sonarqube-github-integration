@@ -33,13 +33,14 @@ overall understanding of the test coverage in the project.
 
 ![GitHub-Sonarqube_Integration](GitHub-SonQube.svg)
 
-In this example, we use the ballerina github connector to get a list of repositories under a specified organiztion in 
-github, and then pass that list to the ballerina sonarqube connector to get the test line coverage of each repository.
+In this example, we use the ballerina github endpoint to get a list of repositories under a specified organiztion in 
+github, and then pass that list to the ballerina sonarqube endpoint to get the test line coverage of each repository.
  
 ## Prerequisites
-
-- Ballerina distribution
-- Sonaqube
+- JDK 1.8 or later
+- [Ballerina distribution](https://github.com/ballerina-platform/ballerina-lang/blob/master/docs/quick-tour.md)
+- [Ballerina Sonaqube](https://central.ballerina.io/packages/wso2/sonarqube6)
+- [Ballerina GitHub](https://central.ballerina.io/packages/wso2/github4)
 - A text editor or an IDE such as Intellij IDEA or Eclipse
 
 **Optional requirements**
@@ -70,65 +71,76 @@ line-coverage-with-sonarqube-github
 ```
 
 Package `RepositoryLineCoverageApp` contains the main ballerina program that will use the ballerina 
-sonarqube and github connectors to fetch a list of repositories from a github organization and then fetch the 
-test line coverage of each of those repositories.
+sonarqube and github endpoints to fetch a list of repositories from a github organization and then fetch the 
+test line coverage of each of those repositories. It also contains a sub directory `test` which contains the tests
+that we write for the program.
 
 
 ### Implementation
 
 In this section, this guide will walk you through the steps in implementing the above mentioned ballerina program.
 
-The sonarqube and github connectors communicate with their respective APIs in order to obtain the data. 
-Since these APIs are protected with authorization tokens, we need to configure both the sonarqube and github connectors 
+The sonarqube and github endpoints communicate with their respective APIs in order to obtain the data. 
+Since these APIs are protected with authorization tokens, we need to configure both the sonarqube and github endpoints 
 by providing the respective access tokens.
 
-> In this guide the access tokens are obtained from a configuration file. So provide the sonarqube and github 
-access tokens in the 'ballerina.conf' file under the key names SONARQUBE_TOKEN and GITHUB_TOKEN
+> In this guide the access tokens are read from a configuration file. So, provide the sonarqube and github 
+access tokens in the 'ballerina.conf' file under the key names SONARQUBE_TOKEN and GITHUB_TOKEN. Since the Sonarqube endpoint is dynamic,
+we need to specify it under the key name SONARQUBE_ENDPOINT.
+
+```
+GITHUB_TOKEN=""
+SONARQUBE_TOKEN=""
+SONARQUBE_ENDPOINT="https://wso2.org/sonar"
+```
+
 #### Create a main function
-First, lets write the main function inside the 'RepositoryLineCoverage.bal' file. If you are using an IDE, then this will be automatically generated for you. Then let's define a function `getLineCoverageSummary()` to get the test line coverage details.
+First, lets write the main function inside the 'repository_line_coverage.bal' file. If you are using an IDE, then this will be automatically generated for you. Then let's define a function `getLineCoverageSummary()` to get the test line coverage details.
 ```ballerina
-public function main(string[] args) {
+function main(string... args) {
 }
 
 function getLineCoverageSummary (int recordCount) returns json|error{
 }
 ```
 
-The implementation of the line coverage function will be as follows;
+Let's start implementing the `getLineCoverageSummary()` function.
 
 #### Configure and initialize GitHub client
 
 ```ballerina
 endpoint github4:Client githubEP {
-        clientEndpointConfiguration: {
-            auth:{
-                scheme:"oauth",
-                accessToken:config:getAsString("GITHUB_TOKEN") ?: ""
-            }
+    clientEndpointConfiguration: {
+        auth:{
+            scheme:"oauth",
+            accessToken:config:getAsString("GITHUB_TOKEN")
         }
-    };
+    }
+};
 ```
 Here the github access token is read from the configuration file and the GitHub client is initialized.
 
 #### Configure and initialize Sonarqube client
 
 ```ballerina
-    endpoint sonarqube6:SonarQubeClient sonarqubeEP {
-        clientConfig: {
-            targets:[{url:config:getAsString("SONARQUBE_ENDPOINT") ?: ""}],
-            auth:{
-                scheme:"basic",
-                username:config:getAsString("SONARQUBE_TOKEN") ?: "",
-                password:""
-            }
+endpoint sonarqube6:SonarQubeClient sonarqubeEP {
+    clientConfig: {
+        targets:[{url:config:getAsString("SONARQUBE_ENDPOINT")}],
+        auth:{
+            scheme:"basic",
+            username:config:getAsString("SONARQUBE_TOKEN"),
+            password:""
         }
-    };
+    }
+};
 ```
 Similarly, the Sonarqube token is read from the configuration file and the Sonarqube client is initialized.
 
+
+
 #### Get a github organization
 
-Next, we need to get a specific github organization, in order to get all of its repositories.
+We need to get a specific github organization, in order to get all of its repositories.
 
 ```ballerina
     github4:Organization organization;
@@ -137,8 +149,8 @@ Next, we need to get a specific github organization, in order to get all of its 
         github4:Organization org => {
             organization = org;
         }
-        github4:GitConnectorError err => {
-            io:println(err);
+        github4:GitClientError err => {
+            return err;
         }
     }
 ```
@@ -146,13 +158,13 @@ Next, we need to get a specific github organization, in order to get all of its 
 
 ```ballerina
     github4:RepositoryList repositoryList;
-    var gitRepostoryResult = githubEP -> getOrganizationRepositoryList(organization, 100);
+    var gitRepostoryResult = githubEP -> getOrganizationRepositoryList(organization, recordCount);
     match gitRepostoryResult {
         github4:RepositoryList repoList => {
             repositoryList = repoList;
         }
-        github4:GitConnectorError err => {
-            io:println(err);
+        github4:GitClientError err => {
+            return err;
         }
     }
 ```
@@ -160,16 +172,16 @@ Next, we need to get a specific github organization, in order to get all of its 
 #### Get line coverage of each repository from sonarqube
 
 ```ballerina
-    foreach repo in repositoryList.getAllRepositories() {
-        io:println("Fetching project: " + repo.name);
+    json summaryJson = [];
+    foreach i, repo in repositoryList.getAllRepositories() {
         var sonarqubeProjectResult = sonarqubeEP -> getProject(repo.name);
         match sonarqubeProjectResult {
             sonarqube6:Project project => {
-                string lineCoverage = sonarqubeEP -> getLineCoverage(project.key) but {error err => "0.0%"};
-                io:print("Line coverage : ");io:println(lineCoverage);
+                string lineCoverage = sonarqubeEP -> getLineCoverage(untaint project.key) but {error err => "0.0%"};
+                summaryJson[i] = {"name": repo.name, "coverage":lineCoverage};
             }
             error err => {
-                io:print("Error : ");io:println(err);
+                summaryJson[i] = {"name": repo.name, "coverage": "Not defined"};
             }
         }
     }
@@ -221,15 +233,14 @@ You can deploy the services that you developed above in your local environment. 
 Ballerina executable archives (.balx) first and run them in your local environment as follows.
 
 Building 
-   ```bash
+```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina build RepositoryLineCoverageApp/
-   ```
+```
    
 After build is successful, there will be a `.balx` file inside the target directory. That executable can be 
 executed as follows.
 
 Running
-   ```bash
+```bash
     <SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
-
-   ```
+```
