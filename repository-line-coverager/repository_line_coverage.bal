@@ -12,7 +12,7 @@ function main(string... args) {
 function getLineCoverageSummary (int recordCount) returns json|error{
 
     endpoint github4:Client githubEP {
-        clientEndpointConfiguration: {
+        clientConfig: {
             auth:{
                 scheme:"oauth",
                 accessToken:config:getAsString("GITHUB_TOKEN")
@@ -20,9 +20,9 @@ function getLineCoverageSummary (int recordCount) returns json|error{
         }
     };
 
-    endpoint sonarqube6:SonarQubeClient sonarqubeEP {
+    endpoint sonarqube6:Client sonarqubeEP {
         clientConfig: {
-            targets:[{url:config:getAsString("SONARQUBE_ENDPOINT")}],
+            url:config:getAsString("SONARQUBE_ENDPOINT"),
             auth:{
                 scheme:"basic",
                 username:config:getAsString("SONARQUBE_TOKEN"),
