@@ -9,30 +9,30 @@ function main(string... args) {
     io:println(summary);
 }
 
-function getLineCoverageSummary (int recordCount) returns json|error{
+function getLineCoverageSummary(int recordCount) returns json|error {
 
     endpoint github4:Client githubEP {
-        clientEndpointConfiguration: {
-            auth:{
-                scheme:"oauth",
-                accessToken:config:getAsString("GITHUB_TOKEN")
+        clientConfig: {
+            auth: {
+                scheme: "oauth",
+                accessToken: config:getAsString("GITHUB_TOKEN")
             }
         }
     };
 
-    endpoint sonarqube6:SonarQubeClient sonarqubeEP {
+    endpoint sonarqube6:Client sonarqubeEP {
         clientConfig: {
-            targets:[{url:config:getAsString("SONARQUBE_ENDPOINT")}],
-            auth:{
-                scheme:"basic",
-                username:config:getAsString("SONARQUBE_TOKEN"),
-                password:""
+            url: config:getAsString("SONARQUBE_ENDPOINT"),
+            auth: {
+                scheme: "basic",
+                username: config:getAsString("SONARQUBE_TOKEN"),
+                password: ""
             }
         }
     };
 
     github4:Organization organization;
-    var gitOrganizationResult = githubEP -> getOrganization("wso2");
+    var gitOrganizationResult = githubEP->getOrganization("wso2");
     match gitOrganizationResult {
         github4:Organization org => {
             organization = org;
@@ -43,7 +43,7 @@ function getLineCoverageSummary (int recordCount) returns json|error{
     }
 
     github4:RepositoryList repositoryList;
-    var gitRepostoryResult = githubEP -> getOrganizationRepositoryList(organization, recordCount);
+    var gitRepostoryResult = githubEP->getOrganizationRepositoryList(organization, recordCount);
     match gitRepostoryResult {
         github4:RepositoryList repoList => {
             repositoryList = repoList;
@@ -54,14 +54,14 @@ function getLineCoverageSummary (int recordCount) returns json|error{
     }
     json summaryJson = [];
     foreach i, repo in repositoryList.getAllRepositories() {
-        var sonarqubeProjectResult = sonarqubeEP -> getProject(repo.name);
+        var sonarqubeProjectResult = sonarqubeEP->getProject(repo.name);
         match sonarqubeProjectResult {
             sonarqube6:Project project => {
-                string lineCoverage = sonarqubeEP -> getLineCoverage(untaint project.key) but {error err => "0.0%"};
-                summaryJson[i] = {"name": repo.name, "coverage":lineCoverage};
+                string lineCoverage = sonarqubeEP->getLineCoverage(untaint project.key) but { error err => "0.0%" };
+                summaryJson[i] = { "name": repo.name, "coverage": lineCoverage };
             }
             error err => {
-                summaryJson[i] = {"name": repo.name, "coverage": "Not defined"};
+                summaryJson[i] = { "name": repo.name, "coverage": "Not defined" };
             }
         }
     }

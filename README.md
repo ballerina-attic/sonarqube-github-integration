@@ -90,7 +90,7 @@ Let's start implementing the `getLineCoverageSummary()` function.
 
 ```ballerina
 endpoint github4:Client githubEP {
-    clientEndpointConfiguration: {
+    clientConfig: {
         auth:{
             scheme:"oauth",
             accessToken:config:getAsString("GITHUB_TOKEN")
@@ -103,9 +103,9 @@ Here the GitHub access token is read from the configuration file and the GitHub 
 #### Configure and initialize Sonarqube client
 
 ```ballerina
-endpoint sonarqube6:SonarQubeClient sonarqubeEP {
+endpoint sonarqube6:Client sonarqubeEP {
     clientConfig: {
-        targets:[{url:config:getAsString("SONARQUBE_ENDPOINT")}],
+        url:config:getAsString("SONARQUBE_ENDPOINT"),
         auth:{
             scheme:"basic",
             username:config:getAsString("SONARQUBE_TOKEN"),

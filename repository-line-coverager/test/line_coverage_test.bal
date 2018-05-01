@@ -2,7 +2,7 @@ import ballerina/log;
 import ballerina/test;
 
 @test:Config
-function testGetLineCoverageSummary () {
+function testGetLineCoverageSummary() {
     log:printInfo("getLineCoverageSummary()");
     int recordCount = 5;
     var result = getLineCoverageSummary(recordCount);
