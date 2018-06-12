@@ -1,10 +1,11 @@
-# Sonarqube and GitHub Integration
+# SonarQube and GitHub Integration
 
 SonarQube is an open source platform developed by SonarSource for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells and security vulnerabilities. Similarly GitHub brings together the world's largest community of developers to discover, share, and build better software. From open source projects to private team repositories, GitHub is an all-in-one platform for collaborative development.
 
 > This guide walks you through the process of obtaining the test line coverage of each repository in a GitHub organization.
 
-The following sections are covered in this guide
+The following sections are covered in this guide.
+
 - [What you'll build](#what-youll-build)
 - [Prerequisites](#prerequisites)
 - [Developing the program](#developing-the-program)
@@ -76,6 +77,7 @@ SONARQUBE_ENDPOINT="https://wso2.org/sonar"
 
 #### Create a main function
 First lets write the main function inside the 'repository_line_coverage.bal' file. If you are using an IDE, then this is automatically generated for you. Next define a function `getLineCoverageSummary()` to get the test line coverage details.
+
 ```ballerina
 function main(string... args) {
 }
@@ -98,6 +100,7 @@ endpoint github4:Client githubEP {
     }
 };
 ```
+
 Here the GitHub access token is read from the configuration file and the GitHub client is initialized.
 
 #### Configure and initialize Sonarqube client
@@ -114,6 +117,7 @@ endpoint sonarqube6:Client sonarqubeEP {
     }
 };
 ```
+
 Similarly, the SonarQube token is read from the configuration file and the SonarQube client is initialized.
 
 #### Get a GitHub organization
@@ -132,6 +136,7 @@ We need to get a specific GitHub organization in order to get all of its reposit
         }
     }
 ```
+
 #### Get the list of repositories
 
 ```ballerina
@@ -173,11 +178,12 @@ Please refer to the [repository_line_coverage.bal](https://github.com/ballerina-
 
 After the above steps are completed, use the following command to execute the application.
 
-   ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run RepositoryLineCoverageApp/
-   ```
+```bash
+<SAMPLE_ROOT_DIRECTORY>$ ballerina run RepositoryLineCoverageApp/
+```
 
 ### Sample output
+
 ```bash
 ...
 {"name":"carbon-metrics", "coverage":"85.1%"}
@@ -195,9 +201,10 @@ In Ballerina, the unit test cases should be in the same package and the naming c
 This guide contains the unit test case for the `getLineCoverageSummary()` function from the `repository_line_coverage.bal`. 
 
 To run the unit test, go to the sample root directory and run the following command.
-   ```bash
-   <SAMPLE_ROOT_DIRECTORY>$ ballerina test RepositoryLineCoverageApp/
-   ```
+
+```bash
+<SAMPLE_ROOT_DIRECTORY>$ ballerina test RepositoryLineCoverageApp/
+```
    
 Refer to the [line_coverage_test.bal](https://github.com/ballerina-guides/sonarqube-github-integration/blob/master/RepositoryLineCoverageApp/test/line_coverage_test.bal) file for the implementation of the test file.
 
@@ -210,14 +217,16 @@ You can deploy the services that you developed above in your local environment. 
 Ballerina executable archives (.balx) first and run them in your local environment as follows.
 
 **Building** 
+
 ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina build RepositoryLineCoverageApp/
+<SAMPLE_ROOT_DIRECTORY>$ ballerina build RepositoryLineCoverageApp/
 ```
    
 After build is successful, there will be a `.balx` file inside the target directory. That executable can be 
 executed as follows.
 
 **Running**
+
 ```bash
-    <SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
+<SAMPLE_ROOT_DIRECTORY>$ ballerina run <Exec_Archive_File_Name>
 ```
