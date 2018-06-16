@@ -1,6 +1,7 @@
 import ballerina/config;
-import wso2/github4;
+import ballerina/http;
 import ballerina/io;
+import wso2/github4;
 import wso2/sonarqube6;
 
 function main(string... args) {
@@ -14,7 +15,7 @@ function getLineCoverageSummary(int recordCount) returns json|error {
     endpoint github4:Client githubEP {
         clientConfig: {
             auth: {
-                scheme: "oauth",
+                scheme: http:OAUTH2,
                 accessToken: config:getAsString("GITHUB_TOKEN")
             }
         }
@@ -24,7 +25,7 @@ function getLineCoverageSummary(int recordCount) returns json|error {
         clientConfig: {
             url: config:getAsString("SONARQUBE_ENDPOINT"),
             auth: {
-                scheme: "basic",
+                scheme: http:BASIC_AUTH,
                 username: config:getAsString("SONARQUBE_TOKEN"),
                 password: ""
             }
