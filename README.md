@@ -79,11 +79,9 @@ SONARQUBE_ENDPOINT="https://wso2.org/sonar"
 First lets write the main function inside the 'repository_line_coverage.bal' file. If you are using an IDE, then this is automatically generated for you. Next define a function `getLineCoverageSummary()` to get the test line coverage details.
 
 ```ballerina
-function main(string... args) {
-}
+function main(string... args) { }
 
-function getLineCoverageSummary (int recordCount) returns json|error{
-}
+function getLineCoverageSummary (int recordCount) returns json|error{ }
 ```
 
 Let's start implementing the `getLineCoverageSummary()` function.
@@ -94,7 +92,7 @@ Let's start implementing the `getLineCoverageSummary()` function.
 endpoint github4:Client githubEP {
     clientConfig: {
         auth:{
-            scheme:"oauth",
+            scheme:http:BASIC_AUTH,
             accessToken:config:getAsString("GITHUB_TOKEN")
         }
     }
@@ -110,7 +108,7 @@ endpoint sonarqube6:Client sonarqubeEP {
     clientConfig: {
         url:config:getAsString("SONARQUBE_ENDPOINT"),
         auth:{
-            scheme:"basic",
+            scheme:http:BASIC_AUTH,
             username:config:getAsString("SONARQUBE_TOKEN"),
             password:""
         }
@@ -126,7 +124,7 @@ We need to get a specific GitHub organization in order to get all of its reposit
 
 ```ballerina
     github4:Organization organization;
-    var gitOrganizationResult = githubEP -> getOrganization("wso2");
+    var gitOrganizationResult = githubEP->getOrganization("wso2");
     match gitOrganizationResult {
         github4:Organization org => {
             organization = org;
@@ -141,7 +139,7 @@ We need to get a specific GitHub organization in order to get all of its reposit
 
 ```ballerina
     github4:RepositoryList repositoryList;
-    var gitRepostoryResult = githubEP -> getOrganizationRepositoryList(organization, recordCount);
+    var gitRepostoryResult = githubEP->getOrganizationRepositoryList(organization, recordCount);
     match gitRepostoryResult {
         github4:RepositoryList repoList => {
             repositoryList = repoList;
@@ -157,10 +155,10 @@ We need to get a specific GitHub organization in order to get all of its reposit
 ```ballerina
     json summaryJson = [];
     foreach i, repo in repositoryList.getAllRepositories() {
-        var sonarqubeProjectResult = sonarqubeEP -> getProject(repo.name);
+        var sonarqubeProjectResult = sonarqubeEP->getProject(repo.name);
         match sonarqubeProjectResult {
             sonarqube6:Project project => {
-                string lineCoverage = sonarqubeEP -> getLineCoverage(untaint project.key) but {error err => "0.0%"};
+                string lineCoverage = sonarqubeEP->getLineCoverage(untaint project.key) but {error err => "0.0%"};
                 summaryJson[i] = {"name": repo.name, "coverage":lineCoverage};
             }
             error err => {
