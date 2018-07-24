@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ballerina-guides/sonarqube-github-integration.svg?branch=master)](https://travis-ci.org/ballerina-guides/sonarqube-github-integration)
+
 # SonarQube and GitHub Integration
 
 SonarQube is an open source platform developed by SonarSource for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells and security vulnerabilities. Similarly GitHub brings together the world's largest community of developers to discover, share, and build better software. From open source projects to private team repositories, GitHub is an all-in-one platform for collaborative development.
