@@ -31,8 +31,8 @@ In this example, we use the Ballerina GitHub endpoint to get a list of repositor
 ## Prerequisites
 - JDK 1.8 or later
 - [Ballerina distribution](https://github.com/ballerina-platform/ballerina-lang/blob/master/docs/quick-tour.md)
-- [Ballerina SonarQube](https://central.ballerina.io/packages/wso2/sonarqube6)
-- [Ballerina GitHub](https://central.ballerina.io/packages/wso2/github4)
+- [Ballerina SonarQube](https://central.ballerina.io/wso2/sonarqube6)
+- [Ballerina GitHub](https://central.ballerina.io/wso2/github4)
 - A text editor or an IDE such as Intellij IDEA or Eclipse
 
 **Optional requirements**
@@ -81,7 +81,7 @@ SONARQUBE_ENDPOINT="https://wso2.org/sonar"
 First lets write the main function inside the 'repository_line_coverage.bal' file. If you are using an IDE, then this is automatically generated for you. Next define a function `getLineCoverageSummary()` to get the test line coverage details.
 
 ```ballerina
-function main(string... args) { }
+public function main(string... args) { }
 
 function getLineCoverageSummary (int recordCount) returns json|error{ }
 ```
@@ -203,7 +203,7 @@ This guide contains the unit test case for the `getLineCoverageSummary()` functi
 To run the unit test, go to the sample root directory and run the following command.
 
 ```bash
-<SAMPLE_ROOT_DIRECTORY>$ ballerina test RepositoryLineCoverageApp/
+<SAMPLE_ROOT_DIRECTORY>$ ballerina test --config ./ballerina.conf RepositoryLineCoverageApp/
 ```
    
 Refer to the [line_coverage_test.bal](https://github.com/ballerina-guides/sonarqube-github-integration/blob/master/RepositoryLineCoverageApp/test/line_coverage_test.bal) file for the implementation of the test file.

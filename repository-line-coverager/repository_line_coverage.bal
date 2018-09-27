@@ -4,7 +4,7 @@ import ballerina/io;
 import wso2/github4;
 import wso2/sonarqube6;
 
-function main(string... args) {
+public function main(string... args) {
 
     json summary = check getLineCoverageSummary(5);
     io:println(summary);
