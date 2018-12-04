@@ -25,6 +25,6 @@ function testGetLineCoverageSummary() {
     if (result is error) {
         test:assertFail(msg = "Function returned an error");
     } else {
-        test:assertEquals(jsonResult.length(), recordCount, msg = "Record count mismatch in result");
+        test:assertEquals(result.length(), recordCount, msg = "Record count mismatch in result");
     }
 }
