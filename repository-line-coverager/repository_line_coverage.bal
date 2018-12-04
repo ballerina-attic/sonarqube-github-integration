@@ -71,11 +71,13 @@ function getLineCoverageSummary(int recordCount) returns json|error {
             summaryJson[i] = { "name": repo.name, "coverage": "Not defined" };
         } else {
             var lineCoverageResult = sonarqubeEP->getLineCoverage(untaint sonarqubeProjectResult.key);
+            string lineCoverage = "";
             if (lineCoverageResult is error) {
-                summaryJson[i] = { "name": repo.name, "coverage": "0.0%" };
+                lineCoverage = "0.0%";
             } else {
-                summaryJson[i] = { "name": repo.name, "coverage": lineCoverageResult };
+                lineCoverage = lineCoverageResult;
             }
+            summaryJson[i] = { "name": repo.name, "coverage": lineCoverage };
         }
         i += 1;
     }
