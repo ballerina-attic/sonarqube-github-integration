@@ -154,13 +154,15 @@ We need to get a specific GitHub organization in order to get all of its reposit
     foreach github4:Repository repo in repositoryList.getAllRepositories() {
         var sonarqubeProjectResult = sonarqubeEP->getProject(repo.name);
         if (sonarqubeProjectResult is error) {
-            summaryJson[i] = {"name": repo.name, "coverage": "Not defined"};
+            summaryJson[i] = { "name": repo.name, "coverage": "Not defined" };
         } else {
             string lineCoverage = sonarqubeEP->getLineCoverage(untaint sonarqubeProjectResult.key);
             if (lineCoverage is error) {
                 lineCoverage => "0.0%"
-             };
-            summaryJson[i] = {"name": repo.name, "coverage":lineCoverage};
+             }  else {
+                lineCoverage = lineCoverageResult;
+             }
+            summaryJson[i] = { "name": repo.name, "coverage":lineCoverage };
         }
         i += 1;
     }
