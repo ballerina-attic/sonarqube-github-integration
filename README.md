@@ -52,7 +52,7 @@ Ballerina is a complete programming language that can have any custom project st
 line-coverage-with-sonarqube-github
 ├── RepositoryLineCoverageApp
 │   ├── repository_line_coverage.bal
-│   └── test
+│   └── tests
 │       └── line_coverage_test.bal
 ├── README.md
 ├── Ballerina.toml
@@ -151,7 +151,7 @@ We need to get a specific GitHub organization in order to get all of its reposit
 ```ballerina
     json summaryJson = [];
     int i = 0;
-    foreach (int i, github4:Repository repo) in repositoryList.getAllRepositories() {
+    foreach github4:Repository repo in repositoryList.getAllRepositories() {
         var sonarqubeProjectResult = sonarqubeEP->getProject(repo.name);
         if (sonarqubeProjectResult is error) {
             summaryJson[i] = {"name": repo.name, "coverage": "Not defined"};
@@ -162,6 +162,7 @@ We need to get a specific GitHub organization in order to get all of its reposit
              };
             summaryJson[i] = {"name": repo.name, "coverage":lineCoverage};
         }
+        i += 1;
     }
 ```
 
