@@ -10,7 +10,7 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# Module Files #
 *.jar
 *.war
 *.ear
@@ -23,3 +23,6 @@ hs_err_pid*
 
 # Directories
 .idea/
+
+# mac
+.DS_Store

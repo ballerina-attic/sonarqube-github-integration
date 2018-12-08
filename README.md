@@ -18,15 +18,15 @@ The following sections are covered in this guide.
 
 Let's consider a sample scenario where a user requires test line coverage of all the repositories in the organization `wso2`. This guide specifies how Ballerina SonarQube and GitHub endpoints can be used to get a summary of the test line coverage of all repositories in the `wso2` organization.
  
-In GitHub, there are numerous organizations that have a collection of repositories relevant to various projects, and Sonaqube contains the details regarding those projects; such as test line coverage, code duplications, and bugs. 
+In GitHub, there are numerous organizations that have a collection of repositories relevant to various projects, and SonarQube contains the details regarding those projects; such as test line coverage, code duplications, and bugs. 
 
-Therefore, you need obtain the list of repositories in `wso2` from GitHub and then send the repository list to Sonarqube to obtain the line coverage of each of the repositories.
+Therefore, you need obtain the list of repositories in `wso2` from GitHub and then send the repository list to SonarQube to obtain the line coverage of each of the repositories.
 
 The test line coverage of a repository is a significant metric that project leads require in order to get an overall understanding of the test coverage in the project.
 
 ![GitHub-Sonarqube_Integration](GitHub-SonQube.svg)
 
-In this example, we use the Ballerina GitHub endpoint to get a list of repositories under a specified organiztion in GitHub, and then pass that list to the Ballerina SonarQube endpoint to get the test line coverage of each repository.
+In this example, we use the Ballerina GitHub endpoint to get a list of repositories under a specified organization in GitHub, and then pass that list to the Ballerina SonarQube endpoint to get the test line coverage of each repository.
  
 ## Prerequisites
 - JDK 1.8 or later
@@ -52,7 +52,7 @@ Ballerina is a complete programming language that can have any custom project st
 line-coverage-with-sonarqube-github
 ├── RepositoryLineCoverageApp
 │   ├── repository_line_coverage.bal
-│   └── test
+│   └── tests
 │       └── line_coverage_test.bal
 ├── README.md
 ├── Ballerina.toml
@@ -91,14 +91,14 @@ Let's start implementing the `getLineCoverageSummary()` function.
 #### Configure and initialize GitHub client
 
 ```ballerina
-endpoint github4:Client githubEP {
+github4:Client githubEP = new({
     clientConfig: {
         auth:{
             scheme:http:BASIC_AUTH,
             accessToken:config:getAsString("GITHUB_TOKEN")
         }
     }
-};
+});
 ```
 
 Here the GitHub access token is read from the configuration file and the GitHub client is initialized.
@@ -106,7 +106,7 @@ Here the GitHub access token is read from the configuration file and the GitHub 
 #### Configure and initialize Sonarqube client
 
 ```ballerina
-endpoint sonarqube6:Client sonarqubeEP {
+sonarqube6:Client sonarqubeEP = new({
     clientConfig: {
         url:config:getAsString("SONARQUBE_ENDPOINT"),
         auth:{
@@ -115,7 +115,7 @@ endpoint sonarqube6:Client sonarqubeEP {
             password:""
         }
     }
-};
+});
 ```
 
 Similarly, the SonarQube token is read from the configuration file and the SonarQube client is initialized.
@@ -125,15 +125,12 @@ Similarly, the SonarQube token is read from the configuration file and the Sonar
 We need to get a specific GitHub organization in order to get all of its repositories.
 
 ```ballerina
-    github4:Organization organization;
+    github4:Organization organization = new;
     var gitOrganizationResult = githubEP->getOrganization("wso2");
-    match gitOrganizationResult {
-        github4:Organization org => {
-            organization = org;
-        }
-        github4:GitClientError err => {
-            return err;
-        }
+    if (gitOrganizationResult is error) {
+        return gitOrganizationResult;
+    } else {
+        organization = gitOrganizationResult;
     }
 ```
 
@@ -142,13 +139,10 @@ We need to get a specific GitHub organization in order to get all of its reposit
 ```ballerina
     github4:RepositoryList repositoryList;
     var gitRepostoryResult = githubEP->getOrganizationRepositoryList(organization, recordCount);
-    match gitRepostoryResult {
-        github4:RepositoryList repoList => {
-            repositoryList = repoList;
-        }
-        github4:GitClientError err => {
-            return err;
-        }
+    if (gitRepostoryResult is error) {
+        return gitRepostoryResult;
+    } else {
+        repositoryList = gitRepostoryResult;
     }
 ```
 
@@ -156,17 +150,21 @@ We need to get a specific GitHub organization in order to get all of its reposit
 
 ```ballerina
     json summaryJson = [];
-    foreach i, repo in repositoryList.getAllRepositories() {
+    int i = 0;
+    foreach github4:Repository repo in repositoryList.getAllRepositories() {
         var sonarqubeProjectResult = sonarqubeEP->getProject(repo.name);
-        match sonarqubeProjectResult {
-            sonarqube6:Project project => {
-                string lineCoverage = sonarqubeEP->getLineCoverage(untaint project.key) but {error err => "0.0%"};
-                summaryJson[i] = {"name": repo.name, "coverage":lineCoverage};
-            }
-            error err => {
-                summaryJson[i] = {"name": repo.name, "coverage": "Not defined"};
-            }
+        if (sonarqubeProjectResult is error) {
+            summaryJson[i] = { "name": repo.name, "coverage": "Not defined" };
+        } else {
+            string lineCoverage = sonarqubeEP->getLineCoverage(untaint sonarqubeProjectResult.key);
+            if (lineCoverage is error) {
+                lineCoverage => "0.0%"
+             }  else {
+                lineCoverage = lineCoverageResult;
+             }
+            summaryJson[i] = { "name": repo.name, "coverage":lineCoverage };
         }
+        i += 1;
     }
 ```
 
