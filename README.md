@@ -106,16 +106,18 @@ Here the GitHub access token is read from the configuration file and the GitHub 
 #### Configure and initialize Sonarqube client
 
 ```ballerina
-sonarqube6:Client sonarqubeEP = new({
-    clientConfig: {
-        url:config:getAsString("SONARQUBE_ENDPOINT"),
-        auth:{
-            scheme:http:BASIC_AUTH,
-            username:config:getAsString("SONARQUBE_TOKEN"),
-            password:""
+sonarqube6:SonarQubeConfiguration sonarqubeConfig = {
+        baseUrl: config:getAsString("SONARQUBE_ENDPOINT"),
+        clientConfig: {
+            auth: {
+                scheme: http:BASIC_AUTH,
+                username: config:getAsString("SONARQUBE_TOKEN"),
+                password: ""
+            }
         }
-    }
-});
+    };
+
+sonarqube6:Client sonarqubeEP = new(sonarqubeConfig);
 ```
 
 Similarly, the SonarQube token is read from the configuration file and the SonarQube client is initialized.
@@ -125,7 +127,7 @@ Similarly, the SonarQube token is read from the configuration file and the Sonar
 We need to get a specific GitHub organization in order to get all of its repositories.
 
 ```ballerina
-    github4:Organization organization = new;
+    github4:Organization organization;
     var gitOrganizationResult = githubEP->getOrganization("wso2");
     if (gitOrganizationResult is error) {
         return gitOrganizationResult;

@@ -26,6 +26,20 @@ public function main(string... args) {
     io:println(summary);
 }
 
+sonarqube6:SonarQubeConfiguration sonarqubeConfig = {
+        baseUrl: config:getAsString("SONARQUBE_ENDPOINT"),
+        clientConfig: {
+            auth: {
+                scheme: http:BASIC_AUTH,
+                username: config:getAsString("SONARQUBE_TOKEN"),
+                password: ""
+            }
+        }
+    };
+
+sonarqube6:Client sonarqubeEP = new(sonarqubeConfig);
+
+
 function getLineCoverageSummary(int recordCount) returns json|error {
 
     github4:Client githubEP = new({
@@ -36,19 +50,8 @@ function getLineCoverageSummary(int recordCount) returns json|error {
             }
         }
     });
-
-    sonarqube6:Client sonarqubeEP = new ({
-        clientConfig: {
-            url: config:getAsString("SONARQUBE_ENDPOINT"),
-            auth: {
-                scheme: http:BASIC_AUTH,
-                username: config:getAsString("SONARQUBE_TOKEN"),
-                password: ""
-            }
-        }
-    });
-
-    github4:Organization organization = new;
+ 
+    github4:Organization organization;
     var gitOrganizationResult = githubEP->getOrganization("wso2");
     if (gitOrganizationResult is error) {
         return gitOrganizationResult;
