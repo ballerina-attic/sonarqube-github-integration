@@ -37,8 +37,7 @@ In this example, we use the Ballerina GitHub endpoint to get a list of repositor
 
 **Optional requirements**
 - Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), 
-[VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), 
-[Atom](https://atom.io/packages/language-ballerina))
+[VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
 
 
