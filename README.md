@@ -32,7 +32,7 @@ In this example, we use the Ballerina GitHub endpoint to get a list of repositor
 
 - [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
 - A Text Editor or an IDE 
-> **Tip**: You can install the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
+> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 - [Ballerina SonarQube](https://central.ballerina.io/wso2/sonarqube6)
 - [Ballerina GitHub](https://central.ballerina.io/wso2/github4)
 
