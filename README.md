@@ -29,18 +29,16 @@ The test line coverage of a repository is a significant metric that project lead
 In this example, we use the Ballerina GitHub endpoint to get a list of repositories under a specified organization in GitHub, and then pass that list to the Ballerina SonarQube endpoint to get the test line coverage of each repository.
  
 ## Prerequisites
-- JDK 1.8 or later
-- [Ballerina distribution](https://github.com/ballerina-platform/ballerina-lang/blob/master/docs/quick-tour.md)
+
+- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
+- A Text Editor or an IDE 
+> **Tip**: For a better development experience, install one of the following Ballerina IDE plugins: [VSCode](https://marketplace.visualstudio.com/items?itemName=ballerina.ballerina), [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina)
 - [Ballerina SonarQube](https://central.ballerina.io/wso2/sonarqube6)
 - [Ballerina GitHub](https://central.ballerina.io/wso2/github4)
-- A text editor or an IDE such as Intellij IDEA or Eclipse
 
 **Optional requirements**
-- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), 
-[VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), 
-[Atom](https://atom.io/packages/language-ballerina))
-- [Docker](https://docs.docker.com/engine/installation/)
 
+- [Docker](https://docs.docker.com/engine/installation/)
 
 ## Developing the program
 
