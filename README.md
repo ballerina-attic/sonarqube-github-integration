@@ -89,9 +89,14 @@ Let's start implementing the `getLineCoverageSummary()` function.
 ```ballerina
 github4:Client githubEP = new({
     clientConfig: {
-        auth:{
-            scheme:http:BASIC_AUTH,
-            accessToken:config:getAsString("GITHUB_TOKEN")
+        auth: {
+            scheme: http:OAUTH2,
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: config:getAsString("GITHUB_TOKEN")
+                }
+            }
         }
     }
 });
@@ -103,15 +108,17 @@ Here the GitHub access token is read from the configuration file and the GitHub 
 
 ```ballerina
 sonarqube6:SonarQubeConfiguration sonarqubeConfig = {
-        baseUrl: config:getAsString("SONARQUBE_ENDPOINT"),
-        clientConfig: {
-            auth: {
-                scheme: http:BASIC_AUTH,
+    baseUrl: config:getAsString("SONARQUBE_ENDPOINT"),
+    clientConfig:{
+        auth:{
+            scheme:http:BASIC_AUTH,
+            config: {
                 username: config:getAsString("SONARQUBE_TOKEN"),
                 password: ""
             }
         }
-    };
+    }
+};
 
 sonarqube6:Client sonarqubeEP = new(sonarqubeConfig);
 ```
@@ -199,7 +206,7 @@ This guide contains the unit test case for the `getLineCoverageSummary()` functi
 To run the unit test, go to the sample root directory and run the following command.
 
 ```bash
-<SAMPLE_ROOT_DIRECTORY>$ ballerina test --config ./ballerina.conf RepositoryLineCoverageApp/
+<SAMPLE_ROOT_DIRECTORY>$ ballerina test --config ./ballerina.conf repository-line-coverager/
 ```
    
 Refer to the [line_coverage_test.bal](https://github.com/ballerina-guides/sonarqube-github-integration/blob/master/RepositoryLineCoverageApp/test/line_coverage_test.bal) file for the implementation of the test file.
@@ -215,7 +222,7 @@ Ballerina executable archives (.balx) first and run them in your local environme
 **Building** 
 
 ```bash
-<SAMPLE_ROOT_DIRECTORY>$ ballerina build RepositoryLineCoverageApp/
+<SAMPLE_ROOT_DIRECTORY>$ ballerina build repository-line-coverager/
 ```
    
 After build is successful, there will be a `.balx` file inside the target directory. That executable can be 

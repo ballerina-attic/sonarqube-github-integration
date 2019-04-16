@@ -27,15 +27,17 @@ public function main(string... args) {
 }
 
 sonarqube6:SonarQubeConfiguration sonarqubeConfig = {
-        baseUrl: config:getAsString("SONARQUBE_ENDPOINT"),
-        clientConfig: {
-            auth: {
-                scheme: http:BASIC_AUTH,
+    baseUrl: config:getAsString("SONARQUBE_ENDPOINT"),
+    clientConfig:{
+        auth:{
+            scheme:http:BASIC_AUTH,
+            config: {
                 username: config:getAsString("SONARQUBE_TOKEN"),
                 password: ""
             }
         }
-    };
+    }
+};
 
 sonarqube6:Client sonarqubeEP = new(sonarqubeConfig);
 
@@ -46,7 +48,12 @@ function getLineCoverageSummary(int recordCount) returns json|error {
         clientConfig: {
             auth: {
                 scheme: http:OAUTH2,
-                accessToken: config:getAsString("GITHUB_TOKEN")
+                config: {
+                    grantType: http:DIRECT_TOKEN,
+                    config: {
+                        accessToken: config:getAsString("GITHUB_TOKEN")
+                    }
+                }
             }
         }
     });
